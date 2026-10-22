@@ -179,6 +179,7 @@ public class LoopRec {
 
 # ---------- helpers ----------
 function Find-Ffmpeg {
+  if ($env:QC_FFMPEG -and (Test-Path -LiteralPath $env:QC_FFMPEG)) { return $env:QC_FFMPEG }   # handed over by O.M. Video Studio
   $c = Get-Command ffmpeg -ErrorAction SilentlyContinue
   if ($c) { return $c.Source }
   $roots = @("$env:LOCALAPPDATA\O.M. Video Studio", "$env:LOCALAPPDATA\Microsoft\WinGet\Packages", "$env:LOCALAPPDATA\QuickCapture", "$env:ProgramFiles\ffmpeg")
@@ -325,7 +326,7 @@ $btnMicRef = New-Button 'Refresh' 465 294 80
 $chkSys = New-Object System.Windows.Forms.CheckBox
 $chkSys.Text = 'System sound (what the PC plays)'; $chkSys.Location = New-Object System.Drawing.Point((Px 15), (Px 336)); $chkSys.Size = New-Object System.Drawing.Size((Px 285), (Px 24))
 $form.Controls.Add($chkSys)
-[void](New-Label 'Boost (dB)' 305 336 75); $numBoost = New-Num 382 336 0 30 12 60
+[void](New-Label 'Boost (dB)' 305 336 75); $numBoost = New-Num 382 336 0 30 0 60
 
 [void](New-Label 'Save to:' 15 376 62)
 $txtOut = New-Object System.Windows.Forms.TextBox
