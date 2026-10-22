@@ -1,0 +1,8 @@
+# Built installer - publish it as a GitHub Release instead of committing it
+QuickCapture_Setup.exe
+*.exe
+# Temporary / editor files
+*.tmp
+*.log
+Thumbs.db
+desktop.ini
