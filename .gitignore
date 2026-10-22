@@ -6,3 +6,17 @@ QuickCapture_Setup.exe
 *.log
 Thumbs.db
 desktop.ini
+
+# This folder (C:\Users\Admin\Claude projects\FFmpegStudio) is shared with O.M. Video Studio.
+# Ignore everything except the Quick Capture files so a stray "git add -A" never picks up the other project.
+*
+!.gitignore
+!Quick_Capture*
+!QUICK_CAPTURE.md
+!PROJECT_INSTRUCTIONS.md
+!Window_Rect.ps1
+!List_Windows.bat
+!Build_Setup.*
+!Install_Quick_Capture.*
+!Uninstall_Quick_Capture.ps1
+!Link_To_GitHub.*
