@@ -39,3 +39,7 @@ Tick **System sound** to record what the PC is playing through its speakers or h
 ### Still pictures and the folder window (GUI)
 - **Take picture** saves a PNG (`picture_<date>_<time>.png`) of the chosen target: Whole screen (the screen the Quick Capture window is on), One window, or Region (use **Select area with the mouse**). Webcam is not supported for pictures. It waits only half a second (so the Quick Capture window can get out of the way) and, if ticked, also copies the picture to the clipboard.
 - **Show the save folder when finished**: if an Explorer window for the save folder is already open it is brought to the front (and the new file selected) instead of opening another one; otherwise the folder is opened. The **Open folder** button behaves the same way.
+
+## Installing
+
+Run `Install_Quick_Capture.bat` (or build a one-file `QuickCapture_Setup.exe` with `Build_Setup.bat`). It installs for the current user to `%LOCALAPPDATA%\Programs\Quick Capture`, adds Start Menu and Desktop shortcuts, and registers an entry in Settings > Apps to uninstall. Recordings are never deleted on uninstall.
