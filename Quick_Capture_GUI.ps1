@@ -632,10 +632,45 @@ function Take-Picture {
   if ($chkOpen.Checked) { Show-InExplorer $png }
 }
 
+# ---------- tray icon (shown while recording) ----------
+function New-DotIcon([System.Drawing.Color]$c) {
+  $bmp = New-Object System.Drawing.Bitmap(32, 32)
+  $g = [System.Drawing.Graphics]::FromImage($bmp)
+  $g.SmoothingMode = 'AntiAlias'
+  $g.Clear([System.Drawing.Color]::Transparent)
+  $br = New-Object System.Drawing.SolidBrush($c)
+  $g.FillEllipse($br, 3, 3, 26, 26)
+  $g.Dispose(); $br.Dispose()
+  return [System.Drawing.Icon]::FromHandle($bmp.GetHicon())
+}
+$script:icoOn  = New-DotIcon ([System.Drawing.Color]::FromArgb(255, 230, 20, 20))
+$script:icoOff = New-DotIcon ([System.Drawing.Color]::FromArgb(255, 110, 20, 20))
+$script:blink = $false
+$tray = New-Object System.Windows.Forms.NotifyIcon
+$tray.Icon = $script:icoOn
+$tray.Visible = $false
+$trayMenu = New-Object System.Windows.Forms.ContextMenuStrip
+$miStop = $trayMenu.Items.Add('Stop recording')
+$miShow = $trayMenu.Items.Add('Show Quick Capture')
+$tray.ContextMenuStrip = $trayMenu
+
+function Enter-Tray {
+  $tray.Text = 'Quick Capture - starting'
+  $tray.Visible = $true
+  $form.Hide()
+  try { $tray.ShowBalloonTip(3000, 'Quick Capture', 'Recording will start soon. Double-click the red icon to stop, or right-click for options.', 'Info') } catch {}
+}
+
+function Leave-Tray {
+  $tray.Visible = $false
+  if (-not $form.Visible) { $form.Show() }
+}
+
 function Reset-Idle([string]$msg) {
   $script:state = 'idle'
   $script:proc = $null
   $timer.Stop()
+  Leave-Tray
   $form.WindowState = 'Normal'
   $form.Activate()
   $lblStatus.Text = $msg
@@ -712,6 +747,7 @@ function Finish-Record {
   }
   if ($script:rec) { try { $script:rec.Stop() } catch {}; $script:rec = $null }
   $lblStatus.Text = 'Finishing the file...'
+  Leave-Tray
   $form.WindowState = 'Normal'; $form.Refresh()
   $hasWav = $script:wav -and (Test-Path $script:wav) -and ((Get-Item $script:wav).Length -gt 100)
   $tmpMp4 = [System.IO.Path]::ChangeExtension($script:mkv, 'mp4')
@@ -786,7 +822,7 @@ function Start-Capture {
   $script:until = (Get-Date).AddSeconds([int]$numDelay.Value)
   Update-Enabled
   $lblStatus.Text = 'Starting...'
-  $form.WindowState = 'Minimized'
+  Enter-Tray
   $timer.Start()
 }
 
@@ -802,7 +838,10 @@ $timer.Add_Tick({
       $el = [int]((Get-Date) - $script:started).TotalSeconds
       $t = '{0:00}:{1:00}' -f [math]::Floor($el / 60), ($el % 60)
       if ($script:limit -gt 0) { $t += ' / ' + ('{0:00}:{1:00}' -f [math]::Floor($script:limit / 60), ($script:limit % 60)) }
-      $lblStatus.Text = "Recording $t - restore this window from the taskbar to Stop."
+      $lblStatus.Text = "Recording $t - double-click the red tray icon to Stop."
+      $script:blink = -not $script:blink
+      $tray.Icon = $(if ($script:blink) { $script:icoOff } else { $script:icoOn })
+      $tray.Text = "Quick Capture - REC $t"
     }
     'stopping' {
       if ($script:proc.HasExited) { Finish-Record }
@@ -836,7 +875,11 @@ $btnInstall.Add_Click({ Install-Ffmpeg })
 $btnPic.Add_Click({ Take-Picture })
 $btnPick.Add_Click({ Pick-Region })
 $btnStop.Add_Click({ Stop-Record })
+$tray.Add_DoubleClick({ Stop-Record })
+$miStop.Add_Click({ Stop-Record })
+$miShow.Add_Click({ $form.Show(); $form.WindowState = 'Normal'; $form.Activate() })
 $form.Add_FormClosing({
+  try { $tray.Visible = $false; $tray.Dispose() } catch {}
   if ($script:rec) { try { $script:rec.Stop() } catch {} }
   if ($script:proc -and -not $script:proc.HasExited) {
     try { $script:proc.StandardInput.WriteLine('q') } catch {}
@@ -860,4 +903,4 @@ $form.Add_Shown({
 })
 
 Update-Enabled
-[void]$form.ShowDialog()
+[System.Windows.Forms.Application]::Run($form)
