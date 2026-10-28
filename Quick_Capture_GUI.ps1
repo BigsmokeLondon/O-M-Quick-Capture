@@ -567,8 +567,17 @@ function Show-InExplorer([string]$target) {
   else { Start-Process explorer.exe -ArgumentList ('"' + $target + '"') }
 }
 
+function Test-WebcamReady {
+  if ($cbCam.Items.Count -eq 0 -or -not $cbCam.Text) {
+    [void][System.Windows.Forms.MessageBox]::Show("Webcam is selected, but no webcam was found in the list.`r`n`r`nPlug in or switch on your camera (and check Windows camera privacy settings), click Refresh next to the Webcam list, then try again. Or choose Whole screen, One window or Region.", 'Quick Capture - no webcam')
+    return $false
+  }
+  return $true
+}
+
 function Take-Picture {
   if (-not $script:ff) { return }
+  if ($rbCam.Checked -and -not (Test-WebcamReady)) { return }
   if ($rbCam.Checked) { [void][System.Windows.Forms.MessageBox]::Show('Pictures can be taken of Whole screen, One window or Region. Choose one of those first.', 'Quick Capture'); return }
   if ($rbWin.Checked -and -not $cbWin.Text) { [void][System.Windows.Forms.MessageBox]::Show('Choose a window first.', 'Quick Capture'); return }
   $dir = $txtOut.Text.Trim()
@@ -755,7 +764,7 @@ function Stop-Record {
 function Start-Capture {
   if (-not $script:ff) { return }
   if ($rbWin.Checked -and -not $cbWin.Text) { [void][System.Windows.Forms.MessageBox]::Show('Choose a window first.', 'Quick Capture'); return }
-  if ($rbCam.Checked -and -not $cbCam.Text) { [void][System.Windows.Forms.MessageBox]::Show('No webcam selected. Click Refresh.', 'Quick Capture'); return }
+  if ($rbCam.Checked -and -not (Test-WebcamReady)) { return }
   if ($chkMic.Checked -and -not $cbMic.Text) { [void][System.Windows.Forms.MessageBox]::Show('No microphone selected. Click Refresh.', 'Quick Capture'); return }
   $dir = $txtOut.Text.Trim()
   try { [void][System.IO.Directory]::CreateDirectory($dir) }
