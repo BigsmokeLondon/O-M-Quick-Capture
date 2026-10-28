@@ -39,7 +39,8 @@ Prefer no installer? Download this repository as a zip, unzip it anywhere and do
 
 ## Videos
 
-- [Quick Capture tutorial](docs/videos/01-tutorial-mobile.mp4): 1 min 55 s, portrait. Every option explained, with a British English voiceover and no captions.
+- [Quick Capture tutorial](docs/videos/01-tutorial-mobile.mp4): 1 min 55 s, portrait. A quick tour, with a woman's British English voiceover and no captions.
+- [Every option explained](docs/videos/02-all-options-mobile.mp4): 3 min 7 s, portrait. All options including the safety limit, tray icon and sound prompt, in a man's voice.
 
 Video files are best downloaded and played locally; GitHub may not stream them inline. More in [docs/videos](docs/videos/README.md).
 
