@@ -1,0 +1,43 @@
+name: Build installer
+
+# Runs when you push a tag like v1.1.0, or by hand from the Actions tab.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Work out version
+        shell: pwsh
+        run: |
+          # the version lives in Install_Quick_Capture.ps1 ($version = '1.1.0')
+          $v = (Select-String -Path Install_Quick_Capture.ps1 -Pattern "^\$version = '(.+)'").Matches[0].Groups[1].Value
+          "VERSION=$v" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Build QuickCapture_Setup.exe
+        shell: pwsh
+        run: |
+          # Build_Setup.ps1 uses Windows' built-in IExpress
+          & .\Build_Setup.ps1
+          if (-not (Test-Path QuickCapture_Setup.exe)) { throw 'QuickCapture_Setup.exe was not created' }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: QuickCapture_Setup
+          path: QuickCapture_Setup.exe
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}
+          name: Quick Capture ${{ env.VERSION }}
+          target_commitish: ${{ github.sha }}
+          files: QuickCapture_Setup.exe

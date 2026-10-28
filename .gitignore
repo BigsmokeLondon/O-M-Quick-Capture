@@ -20,3 +20,9 @@ desktop.ini
 !Install_Quick_Capture.*
 !Uninstall_Quick_Capture.ps1
 !Link_To_GitHub.*
+!README.md
+!LICENSE
+!docs/
+!docs/**
+!.github/
+!.github/**
