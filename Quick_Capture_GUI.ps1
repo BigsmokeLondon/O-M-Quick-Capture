@@ -766,6 +766,11 @@ function Start-Capture {
   if ($rbWin.Checked -and -not $cbWin.Text) { [void][System.Windows.Forms.MessageBox]::Show('Choose a window first.', 'Quick Capture'); return }
   if ($rbCam.Checked -and -not (Test-WebcamReady)) { return }
   if ($chkMic.Checked -and -not $cbMic.Text) { [void][System.Windows.Forms.MessageBox]::Show('No microphone selected. Click Refresh.', 'Quick Capture'); return }
+  if (-not $chkSys.Checked) {
+    $ans = [System.Windows.Forms.MessageBox]::Show("Record system sound too (what the PC plays)?`r`n`r`nYes = include it`r`nNo = record without PC sound`r`nCancel = go back", 'Quick Capture - system sound', 'YesNoCancel', 'Question')
+    if ($ans -eq 'Cancel') { return }
+    if ($ans -eq 'Yes') { $chkSys.Checked = $true }
+  }
   $dir = $txtOut.Text.Trim()
   try { [void][System.IO.Directory]::CreateDirectory($dir) }
   catch { [void][System.Windows.Forms.MessageBox]::Show("Cannot use the save folder:`r`n$dir`r`n`r`n$($_.Exception.Message)", 'Quick Capture'); return }
