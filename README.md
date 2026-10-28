@@ -12,6 +12,10 @@ From **O.M. Industries Inc**, the makers of [O.M. Video Studio](https://github.c
 |---|---|---|---|
 | [![Main window](docs/images/main-window.png)](docs/images/main-window.png) | [![One window](docs/images/one-window.png)](docs/images/one-window.png) | [![Region](docs/images/region.png)](docs/images/region.png) | [![System sound](docs/images/system-sound.png)](docs/images/system-sound.png) |
 
+| Safety limit | Red tray icon while recording |
+|---|---|
+| [![Safety limit](docs/images/safety-limit.png)](docs/images/safety-limit.png) | [![Tray icon](docs/images/tray-icon.png)](docs/images/tray-icon.png) |
+
 ## What it does
 
 - **Whole screen, One window, Region or Webcam.** For Region, press **Select area with the mouse**, drag over the area, and X, Y, width and height fill in. Window mode records the window's screen area, so it also works for modern apps such as Calculator and Settings that record black with other tools.

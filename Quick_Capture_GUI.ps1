@@ -308,7 +308,7 @@ $btnWinRef = New-Button 'Refresh' 465 56 80
 [void](New-Label 'H' 382 98 20); $numH = New-Num 404 98 2 20000 720 72
 $btnPick = New-Button 'Select area with the mouse' 80 132 230
 
-[void](New-Label 'Webcam:' 15 176 62)
+[void](New-Label 'Camera:' 15 176 62)
 $cbCam = New-Combo 80 176 375
 $btnCamRef = New-Button 'Refresh' 465 174 80
 
