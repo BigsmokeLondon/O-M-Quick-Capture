@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 $title = 'Quick Capture Setup'
-$version = '1.2.0'
+$version = '1.2.1'
 try {
   $src  = Split-Path -Parent $MyInvocation.MyCommand.Path
   $dest = Join-Path $env:LOCALAPPDATA 'Programs\Quick Capture'
@@ -62,7 +62,7 @@ try {
   }
 
   $r = [System.Windows.Forms.MessageBox]::Show("Quick Capture is installed.`n`nShortcuts were added to your Desktop and Start Menu.`n`nOpen it now?", $title, 'YesNo', 'Information')
-  if ($r -eq 'Yes') { Start-Process -FilePath $ps -ArgumentList $lnkArgs -WorkingDirectory $dest }
+  if ($r -eq 'Yes') { Start-Process -FilePath 'explorer.exe' -ArgumentList ('"' + (Join-Path $startDir 'Quick Capture.lnk') + '"') }
 } catch {
   [void][System.Windows.Forms.MessageBox]::Show(('Setup failed:' + "`n`n" + ($_ | Out-String)), $title, 'OK', 'Error')
   exit 1
