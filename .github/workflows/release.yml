@@ -19,7 +19,7 @@ jobs:
         shell: pwsh
         run: |
           # the version lives in Install_Quick_Capture.ps1 ($version = '1.1.0')
-          $v = (Select-String -Path Install_Quick_Capture.ps1 -Pattern "^\$version = '(.+)'").Matches[0].Groups[1].Value
+          $v = (Select-String -Path Install_Quick_Capture.ps1 -Pattern '^\$version\s*=\s*''(.+)''').Matches[0].Groups[1].Value
           "VERSION=$v" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
 
       - name: Build QuickCapture_Setup.exe
