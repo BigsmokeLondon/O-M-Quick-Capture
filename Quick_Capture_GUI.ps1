@@ -248,6 +248,7 @@ $script:started = $null
 $script:stopDeadline = $null
 $script:mkv = ''; $script:mp4 = ''; $script:log = ''
 $script:limit = 0
+$script:stopNote = ''
 $script:rec = $null
 $script:wav = ''
 
@@ -677,6 +678,14 @@ function Leave-Tray {
   if (-not $form.Visible) { $form.Show() }
 }
 
+function Get-FreeGB([string]$path) {
+  try {
+    $root = [System.IO.Path]::GetPathRoot($path)
+    if (-not $root -or $root.StartsWith('\\')) { return $null }
+    return ([System.IO.DriveInfo]::new($root).AvailableFreeSpace / 1GB)
+  } catch { return $null }
+}
+
 function Reset-Idle([string]$msg) {
   $script:state = 'idle'
   $script:proc = $null
@@ -693,6 +702,9 @@ function Begin-Record {
   $script:limit = [int]$numLen.Value
   if ($script:limit -le 0 -and $rbLimitOn.Checked) { $script:limit = 7200 }
   $script:warned = $false
+  $script:nextRemind = 900
+  $script:lastDisk = 0
+  $script:stopNote = ''
   $src = ''
   if ($rbScreen.Checked) {
     $src = "-f gdigrab -framerate $fps -i desktop"
@@ -796,6 +808,7 @@ function Finish-Record {
     if ($hasWav) { Remove-Item $script:wav -Force -ErrorAction SilentlyContinue }
   }
   Reset-Idle ('Saved: ' + $final)
+  if ($script:stopNote) { $note = ($script:stopNote + "`r`n`r`n" + $note).Trim(); $script:stopNote = '' }
   if ($note) { [void][System.Windows.Forms.MessageBox]::Show($note, 'Quick Capture') }
   if ($chkOpen.Checked) { Show-InExplorer $final }
 }
@@ -853,6 +866,24 @@ $timer.Add_Tick({
       if ($script:limit -gt 60 -and -not $script:warned -and $el -ge ($script:limit - 60)) {
         $script:warned = $true
         try { $tray.ShowBalloonTip(5000, 'Quick Capture', 'The recording limit is reached in 1 minute and recording will stop.', 'Warning') } catch {}
+      }
+      if ($el -ge $script:nextRemind) {
+        $script:nextRemind += 900
+        try { $tray.ShowBalloonTip(5000, 'Quick Capture', "Still recording ($t). Double-click the red icon to stop.", 'Info') } catch {}
+      }
+      if ($el - $script:lastDisk -ge 10) {
+        $script:lastDisk = $el
+        $low = $false; $freeTxt = ''
+        foreach ($pth in @($script:mkv, $script:mp4)) {
+          $fg = Get-FreeGB $pth
+          if ($fg -ne $null -and $fg -lt 1) { $low = $true; $freeTxt = ('{0:N1}' -f $fg) + ' GB left on ' + [System.IO.Path]::GetPathRoot($pth) }
+        }
+        if ($low) {
+          $script:stopNote = "Recording was stopped because the disk is almost full ($freeTxt). Free some space and record again if you need more."
+          try { $tray.ShowBalloonTip(8000, 'Quick Capture', 'Disk almost full - recording stopped and saved.', 'Warning') } catch {}
+          Stop-Record
+          return
+        }
       }
       if ($script:limit -gt 0) { $t += ' / ' + ('{0:00}:{1:00}' -f [math]::Floor($script:limit / 60), ($script:limit % 60)) }
       $lblStatus.Text = "Recording $t - double-click the red tray icon to Stop."
