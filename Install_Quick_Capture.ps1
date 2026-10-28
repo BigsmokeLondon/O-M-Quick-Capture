@@ -5,7 +5,7 @@ $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 $title = 'Quick Capture Setup'
-$version = '1.1.0'
+$version = '1.2.0'
 try {
   $src  = Split-Path -Parent $MyInvocation.MyCommand.Path
   $dest = Join-Path $env:LOCALAPPDATA 'Programs\Quick Capture'

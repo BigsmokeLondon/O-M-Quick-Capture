@@ -18,6 +18,7 @@ From **O.M. Industries Inc**, the makers of [O.M. Video Studio](https://github.c
 - **Sound.** Tick **Microphone** for your voice and **System sound** for what the PC plays (built-in Windows loopback, no Stereo Mix or virtual cable needed). **Boost (dB)** lifts quiet system sound. If System sound is not ticked, starting a video asks whether you want it.
 - **Take picture.** An instant PNG of the screen, a window or a region, optionally copied to the clipboard.
 - **Timing.** Frame rate, **Stop after** (seconds, 0 = press Stop) and a **Start delay** to arrange your windows first.
+- **Safety limit.** Recordings stop by themselves after 2 hours so a forgotten recording cannot fill your disk, with a tray warning one minute before. Choose **No limit** if you want to press Stop yourself, or set your own time in **Stop after**.
 - **Tray icon while recording.** The window hides and a blinking red icon appears in the system tray. Hover it for the elapsed time. Double-click it to stop, or right-click for *Stop recording* and *Show Quick Capture*.
 - **Warnings that help.** Webcam chosen but no camera found? It tells you before it starts, for videos and pictures.
 - **Tidy results.** Videos are saved as `capture_<date>_<time>.mp4` and pictures as `picture_<date>_<time>.png` in the folder you choose (default `Videos\Captures`). When it finishes, the save folder comes to the front, or opens if it was closed.

@@ -259,7 +259,7 @@ $form.Text = 'Quick Capture O.M. Industries Inc ' + [char]0xA9 + ' 2026'
 $form.StartPosition = 'CenterScreen'
 $form.AutoScaleMode = 'Dpi'
 $form.AutoScaleDimensions = New-Object System.Drawing.SizeF(96, 96)
-$form.ClientSize = New-Object System.Drawing.Size((Px 560), (Px 522))
+$form.ClientSize = New-Object System.Drawing.Size((Px 560), (Px 558))
 $form.FormBorderStyle = 'FixedDialog'
 $form.MaximizeBox = $false
 $form.Font = New-Object System.Drawing.Font('Segoe UI', 12)
@@ -313,45 +313,56 @@ $btnCamRef = New-Button 'Refresh' 465 174 80
 
 [void](New-Label 'Frame rate' 15 220 75);   $numFps = New-Num 95 220 1 120 30 60
 [void](New-Label 'Stop after (s)' 175 220 95); $numLen = New-Num 272 220 0 86400 0 70
-[void](New-Label '0 = press Stop' 352 220 120)
+[void](New-Label '0 = use the limit below' 352 220 200)
 [void](New-Label 'Start delay (s)' 15 256 95); $numDelay = New-Num 112 256 0 60 3 60
 [void](New-Label 'Time to arrange windows first.' 182 256 330)
 
+$pnlLimit = New-Object System.Windows.Forms.Panel
+$pnlLimit.Location = New-Object System.Drawing.Point((Px 15), (Px 290)); $pnlLimit.Size = New-Object System.Drawing.Size((Px 535), (Px 30))
+$rbLimitOn = New-Object System.Windows.Forms.RadioButton
+$rbLimitOn.Text = 'Safety limit: stop after 2 hours'; $rbLimitOn.Checked = $true
+$rbLimitOn.Location = New-Object System.Drawing.Point(0, 0); $rbLimitOn.Size = New-Object System.Drawing.Size((Px 270), (Px 28))
+$rbLimitOff = New-Object System.Windows.Forms.RadioButton
+$rbLimitOff.Text = 'No limit (I will press Stop)'
+$rbLimitOff.Location = New-Object System.Drawing.Point((Px 280), 0); $rbLimitOff.Size = New-Object System.Drawing.Size((Px 250), (Px 28))
+$pnlLimit.Controls.Add($rbLimitOn); $pnlLimit.Controls.Add($rbLimitOff)
+$form.Controls.Add($pnlLimit)
+
 $chkMic = New-Object System.Windows.Forms.CheckBox
-$chkMic.Text = 'Microphone'; $chkMic.Location = New-Object System.Drawing.Point((Px 15), (Px 296)); $chkMic.Size = New-Object System.Drawing.Size((Px 100), (Px 24))
+$chkMic.Text = 'Microphone'; $chkMic.Location = New-Object System.Drawing.Point((Px 15), (Px 332)); $chkMic.Size = New-Object System.Drawing.Size((Px 100), (Px 24))
 $form.Controls.Add($chkMic)
-$cbMic = New-Combo 120 296 335
-$btnMicRef = New-Button 'Refresh' 465 294 80
+$cbMic = New-Combo 120 332 335
+$btnMicRef = New-Button 'Refresh' 465 330 80
 
 $chkSys = New-Object System.Windows.Forms.CheckBox
-$chkSys.Text = 'System sound (what the PC plays)'; $chkSys.Location = New-Object System.Drawing.Point((Px 15), (Px 336)); $chkSys.Size = New-Object System.Drawing.Size((Px 285), (Px 24))
+$chkSys.Text = 'System sound (what the PC plays)'; $chkSys.Location = New-Object System.Drawing.Point((Px 15), (Px 372)); $chkSys.Size = New-Object System.Drawing.Size((Px 285), (Px 24))
 $form.Controls.Add($chkSys)
-[void](New-Label 'Boost (dB)' 305 336 75); $numBoost = New-Num 382 336 0 30 0 60
+[void](New-Label 'Boost (dB)' 305 372 75); $numBoost = New-Num 382 372 0 30 0 60
 
-[void](New-Label 'Save to:' 15 376 62)
+[void](New-Label 'Save to:' 15 412 62)
 $txtOut = New-Object System.Windows.Forms.TextBox
-$txtOut.Location = New-Object System.Drawing.Point((Px 80), (Px 376)); $txtOut.Size = New-Object System.Drawing.Size((Px 375), (Px 26))
+$txtOut.Location = New-Object System.Drawing.Point((Px 80), (Px 412)); $txtOut.Size = New-Object System.Drawing.Size((Px 375), (Px 26))
 $txtOut.Text = Join-Path $env:USERPROFILE 'Videos\Captures'
 $form.Controls.Add($txtOut)
-$btnBrowse = New-Button 'Browse...' 465 374 80
+$btnBrowse = New-Button 'Browse...' 465 410 80
 
 $chkOpen = New-Object System.Windows.Forms.CheckBox
 $chkOpen.Text = 'Show the save folder when finished'; $chkOpen.Checked = $true
-$chkOpen.Location = New-Object System.Drawing.Point((Px 15), (Px 412)); $chkOpen.Size = New-Object System.Drawing.Size((Px 285), (Px 24))
+$chkOpen.Location = New-Object System.Drawing.Point((Px 15), (Px 448)); $chkOpen.Size = New-Object System.Drawing.Size((Px 285), (Px 24))
 $form.Controls.Add($chkOpen)
 $chkClip = New-Object System.Windows.Forms.CheckBox
 $chkClip.Text = 'Copy pictures to clipboard'; $chkClip.Checked = $true
-$chkClip.Location = New-Object System.Drawing.Point((Px 305), (Px 412)); $chkClip.Size = New-Object System.Drawing.Size((Px 245), (Px 24))
+$chkClip.Location = New-Object System.Drawing.Point((Px 305), (Px 448)); $chkClip.Size = New-Object System.Drawing.Size((Px 245), (Px 24))
 $form.Controls.Add($chkClip)
 
-$btnStart = New-Button 'Start video recording' 15 450 165
-$btnStop = New-Button 'Stop' 185 450 60
+$btnStart = New-Button 'Start video recording' 15 486 165
+$btnStop = New-Button 'Stop' 185 486 60
 $btnStop.Enabled = $false
-$btnFolder = New-Button 'Open folder' 250 450 100
-$btnPic = New-Button 'Take picture' 355 450 100
-$btnInstall = New-Button 'Install ffmpeg' 458 450 100
+$btnFolder = New-Button 'Open folder' 250 486 100
+$btnPic = New-Button 'Take picture' 355 486 100
+$btnInstall = New-Button 'Install ffmpeg' 458 486 100
 
-$lblStatus = New-Label '' 15 488 530
+$lblStatus = New-Label '' 15 524 530
 $lblStatus.TextAlign = 'MiddleLeft'
 if ($script:ff) { $lblStatus.Text = 'Ready.' } else { $lblStatus.Text = 'ffmpeg not found.' }
 
@@ -368,7 +379,7 @@ function Update-Enabled {
   $btnStop.Enabled = -not $idle
   $btnInstall.Visible = (-not $script:ff)
   $btnInstall.Enabled = $idle
-  foreach ($c in @($rbScreen, $rbWin, $rbReg, $rbCam, $numFps, $numLen, $numDelay, $chkMic, $chkSys, $numBoost, $txtOut, $btnBrowse)) { $c.Enabled = $idle }
+  foreach ($c in @($rbScreen, $rbWin, $rbReg, $rbCam, $numFps, $numLen, $numDelay, $rbLimitOn, $rbLimitOff, $chkMic, $chkSys, $numBoost, $txtOut, $btnBrowse)) { $c.Enabled = $idle }
 }
 
 function Load-Windows {
@@ -680,6 +691,8 @@ function Reset-Idle([string]$msg) {
 function Begin-Record {
   $fps = [int]$numFps.Value
   $script:limit = [int]$numLen.Value
+  if ($script:limit -le 0 -and $rbLimitOn.Checked) { $script:limit = 7200 }
+  $script:warned = $false
   $src = ''
   if ($rbScreen.Checked) {
     $src = "-f gdigrab -framerate $fps -i desktop"
@@ -837,6 +850,10 @@ $timer.Add_Tick({
       if ($script:proc.HasExited) { Finish-Record; return }
       $el = [int]((Get-Date) - $script:started).TotalSeconds
       $t = '{0:00}:{1:00}' -f [math]::Floor($el / 60), ($el % 60)
+      if ($script:limit -gt 60 -and -not $script:warned -and $el -ge ($script:limit - 60)) {
+        $script:warned = $true
+        try { $tray.ShowBalloonTip(5000, 'Quick Capture', 'The recording limit is reached in 1 minute and recording will stop.', 'Warning') } catch {}
+      }
       if ($script:limit -gt 0) { $t += ' / ' + ('{0:00}:{1:00}' -f [math]::Floor($script:limit / 60), ($script:limit % 60)) }
       $lblStatus.Text = "Recording $t - double-click the red tray icon to Stop."
       $script:blink = -not $script:blink
